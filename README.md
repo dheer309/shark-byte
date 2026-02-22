@@ -1,4 +1,4 @@
-# UniTap
+# SharkByte
 
 NFC-powered campus engagement platform for KCL — one tap on your student ID card earns XP, builds streaks, and puts you on the leaderboard.
 
@@ -6,7 +6,7 @@ NFC-powered campus engagement platform for KCL — one tap on your student ID ca
 
 ## The idea
 
-Students are already carrying an NFC-enabled university ID card. UniTap turns every tap — attending a lecture, checking into a society event — into a gamified action. Show up consistently, earn badges, climb the leaderboard. Engagement becomes visible and rewarding without any extra apps or hardware for the student.
+Students are already carrying an NFC-enabled university ID card. SharkByte turns every tap — attending a lecture, checking into a society event — into a gamified action. Show up consistently, earn badges, climb the leaderboard. Engagement becomes visible and rewarding without any extra apps or hardware for the student.
 
 ---
 
@@ -32,7 +32,7 @@ Streaks reset if a student misses a day. Best streak is tracked separately so pa
 
 ## What it does
 
-Students tap their existing Mifare Classic university ID card on any UniTap device (ESP32 + NFC reader). The system resolves who tapped and what the device is configured for, then performs the appropriate action and pushes a live update to the dashboard.
+Students tap their existing Mifare Classic university ID card on any SharkByte device (ESP32 + NFC reader). The system resolves who tapped and what the device is configured for, then performs the appropriate action and pushes a live update to the dashboard.
 
 | Mode           | Action                                               |
 | -------------- | ---------------------------------------------------- |
@@ -75,7 +75,7 @@ pip install -r requirements.txt
 Create a `.env` file in `backend/`:
 
 ```env
-MONGO_URI=mongodb://localhost:27017/unitap
+MONGO_URI=mongodb://localhost:27017/SharkByte
 JWT_SECRET=your-secret-key
 RESEND_API_KEY=re_...          # for OTP emails
 ```
@@ -109,7 +109,7 @@ The app runs on `http://localhost:5173`. Vite proxies `/api` → `localhost:5000
 ## Project structure
 
 ```
-unitap/
+SharkByte/
 ├── backend/
 │   ├── app.py              # Flask app + SSE
 │   ├── seed.py             # Seed MongoDB with demo data
