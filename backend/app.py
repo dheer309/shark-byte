@@ -9,7 +9,7 @@ load_dotenv()
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'sharkbyte-hackathon-secret-2025')
-CORS(app, origins=['http://localhost:5173', 'http://10.70.159.4:5173', 'https://10.70.159.4:5173'])
+CORS(app, origins=['http://localhost:5173', 'http://10.70.159.4:5173', 'https://10.70.159.4:5173', 'https://sharkbyte.londonrobotics.co.uk'])
 
 # MongoDB
 mongo_uri = os.getenv('MONGO_URI', 'mongodb://localhost:27017')

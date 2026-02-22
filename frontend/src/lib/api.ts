@@ -2,9 +2,10 @@ import type { User } from '../types'
 
 // ─── API Client ─────────────────────────────────────
 // All backend communication in one place.
-// Base URL uses Vite's proxy in dev (/api → localhost:5000)
+// In production: hits API subdomain directly via Cloudflare tunnel
+// For local dev only: swap to '/api' to use Vite proxy → localhost:5001
 
-const BASE = '/api'
+const BASE = 'https://api.londonrobotics.co.uk/api'
 
 function getAuthHeaders(): Record<string, string> {
   const token = localStorage.getItem('sharkbyte_token')
