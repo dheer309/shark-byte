@@ -113,6 +113,9 @@ def get_leaderboard():
                         {'$match': {'action': 'attendance'}},
                         {'$group': {'_id': '$user_id', 'taps': {'$sum': 1}}},
                         {'$match': {'taps': {'$gt': my_taps}}},
+                        # Only count users that still exist in the users collection
+                        {'$lookup': {'from': 'users', 'localField': '_id', 'foreignField': '_id', 'as': 'u'}},
+                        {'$match': {'u': {'$ne': []}}},
                         {'$count': 'ahead'},
                     ]))
                     rank = (ahead[0]['ahead'] if ahead else 0) + 1
@@ -130,6 +133,9 @@ def get_leaderboard():
                         {'$match': {'timestamp': {'$gte': since}, 'action': 'attendance'}},
                         {'$group': {'_id': '$user_id', 'taps': {'$sum': 1}}},
                         {'$match': {'taps': {'$gt': my_taps}}},
+                        # Only count users that still exist in the users collection
+                        {'$lookup': {'from': 'users', 'localField': '_id', 'foreignField': '_id', 'as': 'u'}},
+                        {'$match': {'u': {'$ne': []}}},
                         {'$count': 'ahead'},
                     ]))
                     rank = (ahead[0]['ahead'] if ahead else 0) + 1

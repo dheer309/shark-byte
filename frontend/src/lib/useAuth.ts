@@ -5,13 +5,13 @@ const SUPERUSER_EMAIL = 'dheer@kcl.ac.uk'
 
 export function useAuth() {
   const [user] = useState<User | null>(() => {
-    const raw = localStorage.getItem('unitap_user')
+    const raw = localStorage.getItem('sharkbyte_user')
     return raw ? JSON.parse(raw) : null
   })
 
   const logout = () => {
-    localStorage.removeItem('unitap_token')
-    localStorage.removeItem('unitap_user')
+    localStorage.removeItem('sharkbyte_token')
+    localStorage.removeItem('sharkbyte_user')
     window.location.href = '/auth'
   }
 

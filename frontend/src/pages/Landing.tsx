@@ -116,7 +116,7 @@ function DeviceIllustration() {
           border: `1px solid ${O.rule}`, display: 'flex', flexDirection: 'column',
           justifyContent: 'center', alignItems: 'center',
         }}>
-          <div style={{ fontSize: 10, fontFamily: theme.fonts.mono, color: O.orange, letterSpacing: '0.1em', marginBottom: 4 }}>UNITAP v1.0</div>
+          <div style={{ fontSize: 10, fontFamily: theme.fonts.mono, color: O.orange, letterSpacing: '0.1em', marginBottom: 4 }}>SHARKBYTE v1.0</div>
           <div style={{ fontSize: 18, fontFamily: theme.fonts.mono, color: O.white, fontWeight: 700 }}>TAP ✓</div>
           <div style={{ fontSize: 9, fontFamily: theme.fonts.mono, color: O.dim, marginTop: 4 }}>D. MAHESHWARI — 09:01:34</div>
         </div>
@@ -221,14 +221,8 @@ export default function LandingPage() {
         background: `${O.black}cc`, backdropFilter: 'blur(24px)', borderBottom: `1px solid ${O.rule}`,
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          <div style={{
-            width: 26, height: 26, borderRadius: 6, background: O.orange,
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            boxShadow: `0 0 20px ${O.orangeDim}`,
-          }}>
-            <span style={{ fontSize: 13, fontWeight: 900, color: O.black, fontFamily: theme.fonts.mono }}>U</span>
-          </div>
-          <span style={{ fontSize: 14, fontWeight: 700, letterSpacing: '0.12em', fontFamily: theme.fonts.mono, color: O.white }}>UNITAP</span>
+          <img src="/logo.png" alt="SharkByte" style={{ width: 28, height: 28, borderRadius: 6, objectFit: 'cover' }} />
+          <span style={{ fontSize: 14, fontWeight: 700, letterSpacing: '0.12em', fontFamily: theme.fonts.mono, color: O.white }}>SHARKBYTE</span>
         </div>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: isMobile ? 12 : 36 }}>
@@ -426,8 +420,8 @@ export default function LandingPage() {
       <section style={{ borderTop: `1px solid ${O.rule}`, borderBottom: `1px solid ${O.rule}` }}>
         <div style={{ display: 'grid', gridTemplateColumns: isMobile ? 'repeat(2, 1fr)' : 'repeat(4, 1fr)' }}>
           {[
-            { step: '01', label: 'TAP', desc: 'Student holds existing NFC-enabled ID card to UniTap device. Sub-second read.', icon: '◎' },
-            { step: '02', label: 'ROUTE', desc: 'ESP32 identifies student, checks device mode, sends context to UniTap API over WiFi.', icon: '⇉' },
+            { step: '01', label: 'TAP', desc: 'Student holds existing NFC-enabled ID card to SharkByte device. Sub-second read.', icon: '◎' },
+            { step: '02', label: 'ROUTE', desc: 'ESP32 identifies student, checks device mode, sends context to SharkByte API over WiFi.', icon: '⇉' },
             { step: '03', label: 'ACT', desc: 'Attendance marked. Queue joined. Event registered. Action depends on context.', icon: '⚡' },
             { step: '04', label: 'DISPLAY', desc: 'Real-time data flows to admin dashboard. Profs, lab managers, and societies see everything live.', icon: '◉' },
           ].map((s, i) => (
@@ -469,13 +463,13 @@ export default function LandingPage() {
             boxShadow: `0 0 60px ${O.orangeDim}`, position: 'relative',
           }}
         >
-          DEPLOY UNITAP →
+          DEPLOY SHARKBYTE →
         </button>
       </section>
 
       {/* ═══ FOOTER ═══ */}
       <footer style={{ borderTop: `1px solid ${O.rule}`, padding: isMobile ? '24px 20px' : '32px 48px', display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: 8 }}>
-        <span style={{ fontSize: 10, fontFamily: theme.fonts.mono, color: O.dim, letterSpacing: '0.08em' }}>UNITAP — HACKLONDON 2025</span>
+        <span style={{ fontSize: 10, fontFamily: theme.fonts.mono, color: O.dim, letterSpacing: '0.08em' }}>SHARKBYTE — HACKLONDON 2025</span>
         <span style={{ fontSize: 10, fontFamily: theme.fonts.mono, color: O.dim, letterSpacing: '0.08em' }}>ESP32 · REACT · MONGODB · NFC</span>
       </footer>
     </div>

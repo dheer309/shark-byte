@@ -34,8 +34,8 @@ export default function Auth() {
     try {
       if (mode === 'login') {
         const result = await auth.login({ email, password }) as { token: string; user: User }
-        localStorage.setItem('unitap_token', result.token)
-        localStorage.setItem('unitap_user', JSON.stringify(result.user))
+        localStorage.setItem('sharkbyte_token', result.token)
+        localStorage.setItem('sharkbyte_user', JSON.stringify(result.user))
         navigate(redirectTo)
       } else {
         await auth.register({ email, name, university, password }) as { message: string; email: string }
@@ -55,8 +55,8 @@ export default function Auth() {
 
     try {
       const result = await auth.verifyOtp({ email, otp }) as { token: string; user: User }
-      localStorage.setItem('unitap_token', result.token)
-      localStorage.setItem('unitap_user', JSON.stringify(result.user))
+      localStorage.setItem('sharkbyte_token', result.token)
+      localStorage.setItem('sharkbyte_user', JSON.stringify(result.user))
       navigate(redirectTo)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Something went wrong')
@@ -104,13 +104,8 @@ export default function Auth() {
       <div style={{ maxWidth: 400, width: '100%', padding: '0 24px' }}>
         {/* Logo */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 12, marginBottom: 48 }}>
-          <div style={{
-            width: 32, height: 32, borderRadius: 6, background: O.orange,
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-          }}>
-            <span style={{ fontSize: 16, fontWeight: 900, color: O.black, fontFamily: theme.fonts.mono }}>U</span>
-          </div>
-          <span style={{ fontSize: 17, fontWeight: 700, letterSpacing: '0.12em', fontFamily: theme.fonts.mono }}>UNITAP</span>
+          <img src="/logo.png" alt="SharkByte" style={{ width: 32, height: 32, borderRadius: 6, objectFit: 'cover' }} />
+          <span style={{ fontSize: 17, fontWeight: 700, letterSpacing: '0.12em', fontFamily: theme.fonts.mono }}>SHARKBYTE</span>
         </div>
 
         {step === 'otp' ? (

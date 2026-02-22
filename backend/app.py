@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'unitap-hackathon-secret-2025')
+app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'sharkbyte-hackathon-secret-2025')
 CORS(app, origins=['http://localhost:5173', 'http://10.70.159.4:5173', 'https://10.70.159.4:5173'])
 
 # MongoDB

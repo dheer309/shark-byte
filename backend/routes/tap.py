@@ -248,6 +248,10 @@ def process_tap_core(device_id: str, card_uid: str, mode_override: str = None):
     # Award XP, update streaks, grant badges
     _update_gamification(db, user, action, is_first_arrival=is_first_arrival)
 
+    # Fetch updated points after gamification
+    updated_user = db.users.find_one({'_id': user['_id']}, {'points': 1})
+    user_points = updated_user.get('points', 0) if updated_user else 0
+
     # Broadcast via SSE
     broadcast_data = serialize_tap({**tap_event})
     broadcast_data['timestamp'] = tap_event['timestamp'].isoformat()
@@ -259,6 +263,7 @@ def process_tap_core(device_id: str, card_uid: str, mode_override: str = None):
         'timestamp': tap_event['timestamp'].isoformat(),
     })
     response['is_first_arrival'] = is_first_arrival
+    response['points'] = user_points
     return response, 201
 
 

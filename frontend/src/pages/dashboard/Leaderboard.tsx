@@ -295,80 +295,6 @@ export default function Leaderboard() {
         </div>
       )}
 
-      {/* ─── Rankings #4–20 ─── */}
-      {rest.length > 0 && (
-        <div style={{ background: O.ink, border: `1px solid ${O.rule}`, borderRadius: 8, overflow: 'hidden', marginBottom: 12 }}>
-          {/* Header row */}
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: isMobile ? '40px 1fr 80px' : '48px 1fr 110px 130px 1fr',
-            gap: isMobile ? 8 : 12, padding: isMobile ? '10px 14px' : '10px 20px',
-            borderBottom: `1px solid ${O.rule}`,
-            fontSize: 10, fontFamily: theme.fonts.mono, color: O.dim, letterSpacing: '0.1em',
-          }}>
-            <span>RANK</span>
-            <span>STUDENT</span>
-            <span style={{ textAlign: 'right' }}>XP</span>
-            {!isMobile && <span>STREAK</span>}
-            {!isMobile && <span>BADGES</span>}
-          </div>
-
-          {rest.map((entry, i) => {
-            const level = getLevel(entry.points)
-            const isMe = user?._id === entry._id
-            return (
-              <div
-                key={entry._id}
-                style={{
-                  display: 'grid',
-                  gridTemplateColumns: isMobile ? '40px 1fr 80px' : '48px 1fr 110px 130px 1fr',
-                  gap: isMobile ? 8 : 12,
-                  padding: isMobile ? '12px 14px' : '14px 20px',
-                  alignItems: 'center',
-                  borderBottom: i < rest.length - 1 ? `1px solid ${O.rule}` : 'none',
-                  background: isMe ? `${O.orange}08` : 'transparent',
-                  borderLeft: isMe ? `2px solid ${O.orange}` : '2px solid transparent',
-                }}
-              >
-                <span style={{ fontSize: 13, fontWeight: 700, fontFamily: theme.fonts.mono, color: O.muted, textAlign: 'center' }}>
-                  #{entry.rank}
-                </span>
-
-                <div>
-                  <div style={{ fontSize: 13, fontWeight: 600, color: isMe ? O.white : O.text, display: 'flex', alignItems: 'center', gap: 6 }}>
-                    {isMobile ? entry.name.split(' ')[0] : entry.name}
-                    {isMe && (
-                      <span style={{ fontSize: 8, fontWeight: 700, fontFamily: theme.fonts.mono, color: O.black, background: O.orange, padding: '1px 5px', borderRadius: 2 }}>YOU</span>
-                    )}
-                  </div>
-                  <div style={{ fontSize: 9, fontFamily: theme.fonts.mono, color: level.color, marginTop: 2, letterSpacing: '0.08em' }}>
-                    {level.label}{isMobile && entry.current_streak > 0 && <span style={{ color: O.dim }}> · {entry.current_streak}d</span>}
-                  </div>
-                </div>
-
-                <div style={{ textAlign: 'right' }}>
-                  <span style={{ fontSize: 15, fontWeight: 800, fontFamily: theme.fonts.mono, color: isMe ? O.orange : O.white }}>
-                    {entry.points.toLocaleString()}
-                  </span>
-                  <span style={{ fontSize: 10, color: O.dim, fontFamily: theme.fonts.mono, marginLeft: 2 }}>XP</span>
-                </div>
-
-                {!isMobile && <StreakBar streak={entry.current_streak} max={maxStreak} />}
-
-                {!isMobile && (
-                  <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>
-                    {entry.badges.slice(0, 3).map(b => <BadgePill key={b} badge={b} />)}
-                    {entry.badges.length > 3 && (
-                      <span style={{ fontSize: 9, color: O.dim, fontFamily: theme.fonts.mono }}>+{entry.badges.length - 3}</span>
-                    )}
-                  </div>
-                )}
-              </div>
-            )
-          })}
-        </div>
-      )}
-
       {/* ─── Your Standing ─── */}
       {me && (
         <div style={{
@@ -522,7 +448,7 @@ export default function Leaderboard() {
             { label: 'Attend a lecture', xp: '+10 XP' },
             { label: 'First to arrive', xp: '+25 XP' },
             { label: 'Event check-in', xp: '+15 XP' },
-            { label: 'Equipment use', xp: '+5 XP' },
+            { label: 'Equipment use with proper return', xp: '+5 XP' },
             { label: '3-day streak', xp: '+20 XP bonus' },
             { label: '7-day streak', xp: '+50 XP bonus' },
             { label: '30-day streak', xp: '+200 XP bonus' },

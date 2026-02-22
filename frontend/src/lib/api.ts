@@ -7,7 +7,7 @@ import type { User } from '../types'
 const BASE = '/api'
 
 function getAuthHeaders(): Record<string, string> {
-  const token = localStorage.getItem('unitap_token')
+  const token = localStorage.getItem('sharkbyte_token')
   return token ? { Authorization: `Bearer ${token}` } : {}
 }
 

@@ -1,4 +1,4 @@
-// ─── UniTap Design Tokens ───────────────────────────
+// ─── SharkByte Design Tokens ───────────────────────────
 // Black + Orange industrial theme
 // Every color, spacing, and font decision lives here.
 

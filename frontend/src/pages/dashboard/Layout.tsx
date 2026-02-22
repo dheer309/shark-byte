@@ -11,7 +11,7 @@ export default function DashboardLayout() {
   const { isMobile } = useWindowSize()
 
   // Auth guard
-  const token = localStorage.getItem('unitap_token')
+  const token = localStorage.getItem('sharkbyte_token')
   if (!token) {
     return <Navigate to="/auth?redirect=/dashboard" replace />
   }
@@ -57,14 +57,8 @@ export default function DashboardLayout() {
             style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer' }}
             onClick={() => navigate('/')}
           >
-            <div style={{
-              width: 24, height: 24, borderRadius: 5, background: O.orange,
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              boxShadow: `0 0 12px ${O.orangeDim}`,
-            }}>
-              <span style={{ fontSize: 12, fontWeight: 900, color: O.black, fontFamily: theme.fonts.mono }}>U</span>
-            </div>
-            <span style={{ fontSize: 13, fontWeight: 700, letterSpacing: '0.1em', fontFamily: theme.fonts.mono, color: O.white }}>UNITAP</span>
+            <img src="/logo.png" alt="SharkByte" style={{ width: 24, height: 24, borderRadius: 5, objectFit: 'cover' }} />
+            <span style={{ fontSize: 13, fontWeight: 700, letterSpacing: '0.1em', fontFamily: theme.fonts.mono, color: O.white }}>SHARKBYTE</span>
           </div>
 
           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
@@ -148,14 +142,8 @@ export default function DashboardLayout() {
           style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '0 20px', marginBottom: 40, cursor: 'pointer' }}
           onClick={() => navigate('/')}
         >
-          <div style={{
-            width: 26, height: 26, borderRadius: 5, background: O.orange,
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            boxShadow: `0 0 16px ${O.orangeDim}`,
-          }}>
-            <span style={{ fontSize: 13, fontWeight: 900, color: O.black, fontFamily: theme.fonts.mono }}>U</span>
-          </div>
-          <span style={{ fontSize: 14, fontWeight: 700, letterSpacing: '0.1em', fontFamily: theme.fonts.mono, color: O.white }}>UNITAP</span>
+          <img src="/logo.png" alt="SharkByte" style={{ width: 26, height: 26, borderRadius: 5, objectFit: 'cover' }} />
+          <span style={{ fontSize: 14, fontWeight: 700, letterSpacing: '0.1em', fontFamily: theme.fonts.mono, color: O.white }}>SHARKBYTE</span>
         </div>
 
         {/* Nav */}

@@ -29,7 +29,7 @@ export default function LinkCard() {
 
   // Check NFC support + logged in user
   useEffect(() => {
-    const stored = localStorage.getItem('unitap_user')
+    const stored = localStorage.getItem('sharkbyte_user')
     if (stored) {
       try { setUser(JSON.parse(stored)) } catch { /* ignore */ }
     }
@@ -74,7 +74,7 @@ export default function LinkCard() {
       try {
         const updated = await auth.linkCard({ user_id: user._id, card_uid: uid }) as User
         setUser(updated)
-        localStorage.setItem('unitap_user', JSON.stringify(updated))
+        localStorage.setItem('sharkbyte_user', JSON.stringify(updated))
       } catch { /* best effort */ }
     }
   }
@@ -136,13 +136,8 @@ export default function LinkCard() {
       <div style={{ maxWidth: 420, width: '100%', padding: '0 24px', textAlign: 'center' }}>
         {/* Logo */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 12, marginBottom: 48 }}>
-          <div style={{
-            width: 32, height: 32, borderRadius: 6, background: O.orange,
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-          }}>
-            <span style={{ fontSize: 16, fontWeight: 900, color: O.black, fontFamily: theme.fonts.mono }}>U</span>
-          </div>
-          <span style={{ fontSize: 17, fontWeight: 700, letterSpacing: '0.12em', fontFamily: theme.fonts.mono }}>UNITAP</span>
+          <img src="/logo.png" alt="SharkByte" style={{ width: 32, height: 32, borderRadius: 6, objectFit: 'cover' }} />
+          <span style={{ fontSize: 17, fontWeight: 700, letterSpacing: '0.12em', fontFamily: theme.fonts.mono }}>SHARKBYTE</span>
         </div>
 
         {/* ─── Idle State ─── */}
@@ -153,7 +148,7 @@ export default function LinkCard() {
             </h1>
             <p style={{ fontSize: 15, color: O.muted, lineHeight: 1.6, marginBottom: 24 }}>
               {linkMode === 'self'
-                ? 'Pair your student ID card with your UniTap account.'
+                ? 'Pair your student ID card with your SharkByte account.'
                 : 'Help a friend (iPhone user) link their student ID card.'
               }
             </p>
@@ -387,7 +382,7 @@ export default function LinkCard() {
               <>
                 <h2 style={{ fontSize: 24, fontWeight: 800, marginBottom: 12, color: O.orange }}>Card Linked!</h2>
                 <p style={{ fontSize: 15, color: O.muted, marginBottom: 24 }}>
-                  Your student ID card is now linked to your UniTap account. Just tap any UniTap device on campus and it'll recognise you.
+                  Your student ID card is now linked to your SharkByte account. Just tap any SharkByte device on campus and it'll recognise you.
                 </p>
 
                 <div style={{
@@ -427,7 +422,7 @@ export default function LinkCard() {
                 {!friendLinked ? (
                   <>
                     <p style={{ fontSize: 15, color: O.muted, marginBottom: 20 }}>
-                      Now enter your friend's UniTap email to link this card to their account.
+                      Now enter your friend's SharkByte email to link this card to their account.
                     </p>
 
                     <div style={{ textAlign: 'left', marginBottom: 16 }}>
@@ -478,7 +473,7 @@ export default function LinkCard() {
                 ) : (
                   <>
                     <p style={{ fontSize: 15, color: O.muted, marginBottom: 24 }}>
-                      Card successfully linked to <span style={{ color: O.orange }}>{friendEmail}</span>. They can now tap any UniTap device on campus.
+                      Card successfully linked to <span style={{ color: O.orange }}>{friendEmail}</span>. They can now tap any SharkByte device on campus.
                     </p>
 
                     <div style={{ display: 'flex', gap: 12 }}>

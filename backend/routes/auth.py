@@ -72,13 +72,13 @@ def serialize_user(user):
 def send_otp_email(email: str, otp: str, name: str):
     """Send OTP verification email via Resend."""
     resend.Emails.send({
-        "from": "UniTap <noreply@londonrobotics.co.uk>",
+        "from": "SharkByte <noreply@londonrobotics.co.uk>",
         "to": [email],
-        "subject": f"UniTap — Your verification code is {otp}",
+        "subject": f"SharkByte — Your verification code is {otp}",
         "html": f"""
         <div style="font-family: monospace; background: #0B0B0B; color: #f5f5f0; padding: 40px; max-width: 480px;">
             <div style="font-size: 24px; font-weight: 800; margin-bottom: 24px;">
-                <span style="color: #FF5F1F;">■</span> UNITAP
+                <span style="color: #FF5F1F;">■</span> SHARKBYTE
             </div>
             <p style="color: #b0b0b0; font-size: 14px;">Hey {name},</p>
             <p style="color: #b0b0b0; font-size: 14px;">Your verification code is:</p>
