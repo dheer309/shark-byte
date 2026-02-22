@@ -195,17 +195,14 @@ export default function LandingPage() {
     {
       id: 'ATTENDANCE', num: '01', title: 'Lecture Attendance',
       desc: 'Student taps at the door. Prof sees a live headcount. Department gets exportable reports. No QR codes, no sign-in sheets, no friction.',
-      stats: [{ label: 'AVG CHECK-IN TIME', value: '0.8s' }, { label: 'ACCURACY VS MANUAL', value: '99.2%' }, { label: 'COST PER ROOM', value: '£12' }],
     },
     {
       id: 'EQUIPMENT', num: '02', title: 'Equipment Queues',
       desc: 'Tap to check out. Tap to return. Current sensing auto-detects usage. Students join queues remotely and get notified when their turn arrives.',
-      stats: [{ label: 'AVG WAIT REDUCTION', value: '67%' }, { label: 'UTILIZATION VISIBLE', value: '100%' }, { label: 'QUEUE NOTIFICATIONS', value: 'PWA' }],
     },
     {
       id: 'SOCIETIES', num: '03', title: 'Society Events',
       desc: 'Societies create events on the portal. Students sign up online. On-site check-in is a single tap. Student Unions get real engagement data for funding.',
-      stats: [{ label: 'SIGN-UP → SHOW-UP', value: 'TRACKED' }, { label: 'EVENTS MANAGED', value: '∞' }, { label: 'SU OVERSIGHT', value: 'BUILT-IN' }],
     },
   ]
 
@@ -226,9 +223,6 @@ export default function LandingPage() {
         </div>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: isMobile ? 12 : 36 }}>
-          {!isMobile && ['PRODUCT', 'SPECS', 'PRICING'].map(item => (
-            <a key={item} href="#" style={{ color: O.dim, fontSize: 11, fontFamily: theme.fonts.mono, letterSpacing: '0.1em', fontWeight: 500 }}>{item}</a>
-          ))}
           <button
             onClick={() => navigate('/dashboard')}
             style={{
@@ -297,9 +291,8 @@ export default function LandingPage() {
                 boxShadow: `0 0 40px ${O.orangeDim}, 0 4px 20px rgba(0,0,0,0.4)`,
               }}
             >
-              VIEW LIVE DEMO
+              GO TO DASHBOARD
             </button>
-            <span style={{ fontSize: 11, color: O.dim, fontFamily: theme.fonts.mono }}>£12 per unit · Open source</span>
           </div>
         </div>
 
@@ -344,31 +337,7 @@ export default function LandingPage() {
           </div>
         )}
 
-        <div style={{ position: 'absolute', bottom: 0, left: isMobile ? 20 : 48, right: isMobile ? 20 : 48, height: 1, background: O.rule }} />
       </section>
-
-      {/* ═══ NUMBERS ═══ */}
-      <section style={{ display: 'grid', gridTemplateColumns: isMobile ? 'repeat(2, 1fr)' : 'repeat(4, 1fr)', borderBottom: `1px solid ${O.rule}` }}>
-        {[
-          { num: 1247, suffix: '', label: 'TAPS TODAY' },
-          { num: 87, suffix: '%', label: 'AVG ATTENDANCE' },
-          { num: 12, suffix: '', label: '£ PER UNIT' },
-          { num: 800, suffix: 'ms', label: 'TAP-TO-CONFIRM' },
-        ].map((s, i) => (
-          <div key={i} style={{
-            padding: isMobile ? '28px 20px' : '48px',
-            borderRight: isMobile ? (i % 2 === 0 ? `1px solid ${O.rule}` : 'none') : (i < 3 ? `1px solid ${O.rule}` : 'none'),
-            borderBottom: isMobile && i < 2 ? `1px solid ${O.rule}` : 'none',
-            textAlign: 'center',
-          }}>
-            <div style={{ fontSize: isMobile ? 32 : 'clamp(36px, 4vw, 56px)', fontWeight: 800, fontFamily: theme.fonts.mono, color: O.white, letterSpacing: '-0.03em' }}>
-              <Counter end={s.num} suffix={s.suffix} />
-            </div>
-            <div style={{ fontSize: 9, fontFamily: theme.fonts.mono, color: O.dim, letterSpacing: '0.15em', marginTop: 6 }}>{s.label}</div>
-          </div>
-        ))}
-      </section>
-
       {/* ═══ MODULES ═══ */}
       <section style={{ padding: isMobile ? '60px 20px' : '120px 48px' }}>
         <div style={{ display: 'flex', alignItems: 'flex-start', gap: 12, marginBottom: isMobile ? 40 : 80 }}>
@@ -404,14 +373,6 @@ export default function LandingPage() {
           <div>
             <h3 style={{ fontSize: isMobile ? 24 : 36, fontWeight: 800, letterSpacing: '-0.03em', margin: '0 0 16px', color: O.white }}>{modules[activeModule].title}</h3>
             <p style={{ fontSize: isMobile ? 14 : 16, color: O.body, lineHeight: 1.75 }}>{modules[activeModule].desc}</p>
-          </div>
-          <div style={{ display: 'flex', flexDirection: 'column' }}>
-            {modules[activeModule].stats.map((stat, i) => (
-              <div key={i} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: isMobile ? '16px 0' : '24px 0', borderBottom: `1px solid ${O.rule}` }}>
-                <span style={{ fontSize: 10, fontFamily: theme.fonts.mono, color: O.dim, letterSpacing: '0.12em' }}>{stat.label}</span>
-                <span style={{ fontSize: isMobile ? 20 : 28, fontWeight: 800, fontFamily: theme.fonts.mono, color: O.orange }}>{stat.value}</span>
-              </div>
-            ))}
           </div>
         </div>
       </section>
@@ -449,7 +410,7 @@ export default function LandingPage() {
           filter: 'blur(80px)', pointerEvents: 'none',
         }} />
         <h2 style={{ fontSize: isMobile ? 28 : 'clamp(36px, 4vw, 56px)', fontWeight: 800, letterSpacing: '-0.04em', margin: '0 0 20px', color: O.white, position: 'relative' }}>
-          Built in a weekend.<br /><span style={{ color: O.orange }}>Scales to every campus.</span>
+          <span style={{ color: O.orange }}>Scale to any campus.</span>
         </h2>
         <p style={{ fontSize: isMobile ? 14 : 16, color: O.muted, maxWidth: 460, margin: '0 auto 32px', lineHeight: 1.7 }}>
           Open source hardware. Simple SaaS platform. Zero friction for students. Real data for institutions.
@@ -463,7 +424,7 @@ export default function LandingPage() {
             boxShadow: `0 0 60px ${O.orangeDim}`, position: 'relative',
           }}
         >
-          DEPLOY SHARKBYTE →
+          GO TO DASHBOARD →
         </button>
       </section>
 

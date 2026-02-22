@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { useNavigate, useSearchParams } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { theme } from '../styles/theme'
 import { auth } from '../lib/api'
 import type { User } from '../types'
@@ -7,42 +7,29 @@ import type { User } from '../types'
 const O = theme.colors
 
 type LinkState = 'idle' | 'scanning' | 'success' | 'error'
-type LinkMode = 'self' | 'friend'
 type ScanMethod = 'nfc' | 'manual'
 
 export default function LinkCard() {
   const navigate = useNavigate()
-  const [searchParams] = useSearchParams()
 
   const [state, setState] = useState<LinkState>('idle')
   const [cardUid, setCardUid] = useState('')
   const [manualUid, setManualUid] = useState('')
   const [error, setError] = useState('')
   const [user, setUser] = useState<User | null>(null)
-  const [linkMode, setLinkMode] = useState<LinkMode>('self')
   const [scanMethod, setScanMethod] = useState<ScanMethod>('nfc')
   const [nfcSupported, setNfcSupported] = useState(false)
 
-  // Friend linking fields
-  const [friendEmail, setFriendEmail] = useState('')
-  const [friendLinked, setFriendLinked] = useState(false)
-
-  // Check NFC support + logged in user
   useEffect(() => {
     const stored = localStorage.getItem('sharkbyte_user')
     if (stored) {
       try { setUser(JSON.parse(stored)) } catch { /* ignore */ }
     }
 
-    if (searchParams.get('mode') === 'friend') {
-      setLinkMode('friend')
-    }
-
-    // Check if Web NFC is available (Android Chrome + HTTPS only)
     const hasNfc = 'NDEFReader' in window && window.isSecureContext
     setNfcSupported(hasNfc)
     if (!hasNfc) setScanMethod('manual')
-  }, [searchParams])
+  }, [])
 
   const startScan = async () => {
     setState('scanning')
@@ -59,7 +46,6 @@ export default function LinkCard() {
       })
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'Failed to start NFC scan'
-      // If NFC fails, suggest manual entry
       setError(`${msg}. Mifare Classic cards may not be readable via Web NFC — try entering the UID manually instead.`)
       setState('error')
     }
@@ -69,8 +55,7 @@ export default function LinkCard() {
     setCardUid(uid)
     setState('success')
 
-    // If linking own card, send to API and update stored user
-    if (linkMode === 'self' && user) {
+    if (user) {
       try {
         const updated = await auth.linkCard({ user_id: user._id, card_uid: uid }) as User
         setUser(updated)
@@ -88,32 +73,8 @@ export default function LinkCard() {
     handleUidCaptured(uid)
   }
 
-  // Link a friend's card using the scanned UID + their email
-  const linkFriendCard = async () => {
-    if (!cardUid || !friendEmail) return
-    setError('')
-
-    try {
-      const res = await fetch('/api/auth/link-card-by-email', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: friendEmail, card_uid: cardUid }),
-      })
-
-      if (!res.ok) {
-        const data = await res.json().catch(() => ({ message: 'Failed to link card' }))
-        throw new Error(data.message)
-      }
-
-      setFriendLinked(true)
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to link card')
-    }
-  }
-
-  // If not logged in and linking own card, redirect to auth
   const requireAuth = () => {
-    if (!user && linkMode === 'self') {
+    if (!user) {
       navigate('/auth?redirect=/link-card')
       return true
     }
@@ -144,35 +105,11 @@ export default function LinkCard() {
         {state === 'idle' && (
           <>
             <h1 style={{ fontSize: 28, fontWeight: 800, letterSpacing: '-0.03em', marginBottom: 12 }}>
-              {linkMode === 'self' ? 'Link Your Card' : 'Link a Friend\'s Card'}
+              Link Your Card
             </h1>
             <p style={{ fontSize: 15, color: O.muted, lineHeight: 1.6, marginBottom: 24 }}>
-              {linkMode === 'self'
-                ? 'Pair your student ID card with your SharkByte account.'
-                : 'Help a friend (iPhone user) link their student ID card.'
-              }
+              Pair your student ID card with your SharkByte account.
             </p>
-
-            {/* Mode Toggle: Self / Friend */}
-            <div style={{
-              display: 'flex', gap: 0, marginBottom: 24,
-              border: `1px solid ${O.rule}`, borderRadius: 8, overflow: 'hidden',
-            }}>
-              {(['self', 'friend'] as const).map(m => (
-                <button
-                  key={m}
-                  onClick={() => setLinkMode(m)}
-                  style={{
-                    flex: 1, padding: '12px 0', background: linkMode === m ? O.orangeDim : O.ink,
-                    border: 'none', color: linkMode === m ? O.orange : O.dim,
-                    fontSize: 10, fontWeight: 700, fontFamily: theme.fonts.mono,
-                    letterSpacing: '0.1em', cursor: 'pointer',
-                  }}
-                >
-                  {m === 'self' ? 'MY CARD' : 'LINK A FRIEND'}
-                </button>
-              ))}
-            </div>
 
             {/* Method Toggle: NFC / Manual */}
             <div style={{
@@ -207,7 +144,7 @@ export default function LinkCard() {
               </button>
             </div>
 
-            {user && linkMode === 'self' && (
+            {user && (
               <div style={{
                 padding: '10px 16px', borderRadius: 6, marginBottom: 24,
                 background: O.ink, border: `1px solid ${O.rule}`,
@@ -226,7 +163,7 @@ export default function LinkCard() {
               <>
                 <button
                   onClick={() => {
-                    if (linkMode === 'self' && requireAuth()) return
+                    if (requireAuth()) return
                     startScan()
                   }}
                   style={{
@@ -284,7 +221,7 @@ export default function LinkCard() {
 
                 <button
                   onClick={() => {
-                    if (linkMode === 'self' && requireAuth()) return
+                    if (requireAuth()) return
                     handleManualSubmit()
                   }}
                   disabled={!manualUid}
@@ -314,12 +251,6 @@ export default function LinkCard() {
                 ▸ Ask your university IT helpdesk
               </div>
             </div>
-
-            {linkMode === 'self' && (
-              <p style={{ fontSize: 12, color: O.dim, marginTop: 24, lineHeight: 1.6 }}>
-                iPhone? Ask a friend with Android to switch to "Link a Friend" mode, or enter the UID manually.
-              </p>
-            )}
           </>
         )}
 
@@ -352,7 +283,7 @@ export default function LinkCard() {
 
             <h2 style={{ fontSize: 24, fontWeight: 800, marginBottom: 12 }}>Scanning...</h2>
             <p style={{ fontSize: 15, color: O.muted }}>
-              Hold {linkMode === 'friend' ? "your friend's" : 'your'} student ID card against the back of your phone.
+              Hold your student ID card against the back of your phone.
             </p>
 
             <button
@@ -378,137 +309,30 @@ export default function LinkCard() {
               <span style={{ fontSize: 36 }}>✓</span>
             </div>
 
-            {linkMode === 'self' ? (
-              <>
-                <h2 style={{ fontSize: 24, fontWeight: 800, marginBottom: 12, color: O.orange }}>Card Linked!</h2>
-                <p style={{ fontSize: 15, color: O.muted, marginBottom: 24 }}>
-                  Your student ID card is now linked to your SharkByte account. Just tap any SharkByte device on campus and it'll recognise you.
-                </p>
+            <h2 style={{ fontSize: 24, fontWeight: 800, marginBottom: 12, color: O.orange }}>Card Linked!</h2>
+            <p style={{ fontSize: 15, color: O.muted, marginBottom: 24 }}>
+              Your student ID card is now linked to your SharkByte account. Just tap any SharkByte device on campus and it'll recognise you.
+            </p>
 
-                <div style={{
-                  padding: '14px 20px', borderRadius: 8, background: O.ink,
-                  border: `1px solid ${O.rule}`, fontFamily: theme.fonts.mono,
-                  fontSize: 14, color: O.white, letterSpacing: '0.08em',
-                }}>
-                  UID: {cardUid}
-                </div>
+            <div style={{
+              padding: '14px 20px', borderRadius: 8, background: O.ink,
+              border: `1px solid ${O.rule}`, fontFamily: theme.fonts.mono,
+              fontSize: 14, color: O.white, letterSpacing: '0.08em',
+            }}>
+              UID: {cardUid}
+            </div>
 
-                <button
-                  onClick={() => navigate('/dashboard')}
-                  style={{
-                    marginTop: 32, width: '100%', padding: '16px', background: O.orange,
-                    color: O.black, border: 'none', borderRadius: 8, fontSize: 14,
-                    fontWeight: 700, fontFamily: theme.fonts.mono, letterSpacing: '0.06em',
-                    cursor: 'pointer',
-                  }}
-                >
-                  GO TO DASHBOARD →
-                </button>
-              </>
-            ) : (
-              <>
-                <h2 style={{ fontSize: 24, fontWeight: 800, marginBottom: 12, color: O.orange }}>
-                  {friendLinked ? 'Friend\'s Card Linked!' : 'Card Captured!'}
-                </h2>
-
-                <div style={{
-                  padding: '14px 20px', borderRadius: 8, background: O.ink,
-                  border: `1px solid ${O.rule}`, fontFamily: theme.fonts.mono,
-                  fontSize: 14, color: O.white, letterSpacing: '0.08em', marginBottom: 24,
-                }}>
-                  UID: {cardUid}
-                </div>
-
-                {!friendLinked ? (
-                  <>
-                    <p style={{ fontSize: 15, color: O.muted, marginBottom: 20 }}>
-                      Now enter your friend's SharkByte email to link this card to their account.
-                    </p>
-
-                    <div style={{ textAlign: 'left', marginBottom: 16 }}>
-                      <label style={{
-                        display: 'block', fontSize: 10, fontFamily: theme.fonts.mono,
-                        color: O.dim, letterSpacing: '0.12em', marginBottom: 6,
-                      }}>
-                        FRIEND'S EMAIL
-                      </label>
-                      <input
-                        type="email"
-                        value={friendEmail}
-                        onChange={e => setFriendEmail(e.target.value)}
-                        placeholder="friend@kcl.ac.uk"
-                        style={{
-                          width: '100%', padding: '14px 16px', background: O.ink,
-                          border: `1px solid ${O.rule}`, borderRadius: 6, color: O.white,
-                          fontSize: 14, fontFamily: theme.fonts.sans, outline: 'none',
-                          boxSizing: 'border-box',
-                        }}
-                      />
-                    </div>
-
-                    {error && (
-                      <div style={{
-                        padding: '10px 14px', borderRadius: 6, marginBottom: 16,
-                        background: 'rgba(239,68,68,0.1)', border: `1px solid ${O.error}33`,
-                        color: O.error, fontSize: 13, fontFamily: theme.fonts.mono,
-                      }}>
-                        {error}
-                      </div>
-                    )}
-
-                    <button
-                      onClick={linkFriendCard}
-                      disabled={!friendEmail}
-                      style={{
-                        width: '100%', padding: '16px',
-                        background: friendEmail ? O.orange : O.dim,
-                        color: O.black, border: 'none', borderRadius: 8, fontSize: 13,
-                        fontWeight: 700, fontFamily: theme.fonts.mono, letterSpacing: '0.06em',
-                        cursor: friendEmail ? 'pointer' : 'default',
-                      }}
-                    >
-                      LINK TO FRIEND'S ACCOUNT
-                    </button>
-                  </>
-                ) : (
-                  <>
-                    <p style={{ fontSize: 15, color: O.muted, marginBottom: 24 }}>
-                      Card successfully linked to <span style={{ color: O.orange }}>{friendEmail}</span>. They can now tap any SharkByte device on campus.
-                    </p>
-
-                    <div style={{ display: 'flex', gap: 12 }}>
-                      <button
-                        onClick={() => {
-                          setState('idle')
-                          setCardUid('')
-                          setManualUid('')
-                          setFriendEmail('')
-                          setFriendLinked(false)
-                        }}
-                        style={{
-                          flex: 1, padding: '14px', background: 'none',
-                          border: `1px solid ${O.rule}`, color: O.text, borderRadius: 8,
-                          fontSize: 13, fontFamily: theme.fonts.mono, cursor: 'pointer',
-                        }}
-                      >
-                        LINK ANOTHER
-                      </button>
-                      <button
-                        onClick={() => navigate('/dashboard')}
-                        style={{
-                          flex: 1, padding: '14px', background: O.orange,
-                          color: O.black, border: 'none', borderRadius: 8,
-                          fontSize: 13, fontWeight: 700, fontFamily: theme.fonts.mono,
-                          cursor: 'pointer',
-                        }}
-                      >
-                        DONE →
-                      </button>
-                    </div>
-                  </>
-                )}
-              </>
-            )}
+            <button
+              onClick={() => navigate('/dashboard')}
+              style={{
+                marginTop: 32, width: '100%', padding: '16px', background: O.orange,
+                color: O.black, border: 'none', borderRadius: 8, fontSize: 14,
+                fontWeight: 700, fontFamily: theme.fonts.mono, letterSpacing: '0.06em',
+                cursor: 'pointer',
+              }}
+            >
+              GO TO DASHBOARD →
+            </button>
           </>
         )}
 
