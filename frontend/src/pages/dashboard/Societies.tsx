@@ -16,6 +16,7 @@ export default function Societies() {
   const [showEventModal, setShowEventModal] = useState(false)
   const [showSocietyModal, setShowSocietyModal] = useState(false)
   const [deleting, setDeleting] = useState<string | null>(null)
+  const [deletingSociety, setDeletingSociety] = useState<string | null>(null)
 
   // Manage society admins state
   const [managingSociety, setManagingSociety] = useState<string | null>(null)
@@ -40,6 +41,7 @@ export default function Societies() {
   // Discover societies
   const [discoverQuery, setDiscoverQuery] = useState('')
   const [joiningId, setJoiningId] = useState<string | null>(null)
+  const [joinError, setJoinError] = useState('')
 
   // Device locations for the event location dropdown
   const [deviceLocations, setDeviceLocations] = useState<string[]>([])
@@ -135,6 +137,18 @@ export default function Societies() {
     }
   }
 
+  const handleDeleteSociety = async (societyId: string, societyName: string) => {
+    if (!confirm(`Delete "${societyName}"? This also deletes all its events.`)) return
+    setDeletingSociety(societyId)
+    try {
+      await societiesApi.deleteSociety(societyId)
+      fetchData()
+    } catch (err) {
+      setJoinError(err instanceof Error ? err.message : 'Failed to delete society')
+    }
+    setDeletingSociety(null)
+  }
+
   const handleDeleteEvent = async (eventId: string) => {
     setDeleting(eventId)
     try {
@@ -176,19 +190,25 @@ export default function Societies() {
 
   const handleJoinSociety = async (societyId: string) => {
     setJoiningId(societyId)
+    setJoinError('')
     try {
       await societiesApi.joinSociety(societyId)
       fetchData()
-    } catch { /* ignore */ }
+    } catch (err) {
+      setJoinError(err instanceof Error ? err.message : 'Failed to join society')
+    }
     setJoiningId(null)
   }
 
   const handleLeaveSociety = async (societyId: string) => {
     setJoiningId(societyId)
+    setJoinError('')
     try {
       await societiesApi.leaveSociety(societyId)
       fetchData()
-    } catch { /* ignore */ }
+    } catch (err) {
+      setJoinError(err instanceof Error ? err.message : 'Failed to leave society')
+    }
     setJoiningId(null)
   }
 
@@ -456,6 +476,20 @@ export default function Societies() {
                       }}
                     >
                       LEAVE
+                    </button>
+                  )}
+                  {canCreateSociety && (
+                    <button
+                      onClick={() => handleDeleteSociety(soc._id, soc.name)}
+                      disabled={deletingSociety === soc._id}
+                      style={{
+                        padding: '4px 10px', borderRadius: 4,
+                        border: `1px solid ${O.error}44`, background: `${O.error}14`,
+                        color: O.error, fontSize: 10, fontFamily: theme.fonts.mono,
+                        cursor: 'pointer', fontWeight: 700, letterSpacing: '0.06em',
+                      }}
+                    >
+                      {deletingSociety === soc._id ? '...' : 'DELETE'}
                     </button>
                   )}
                   {isAdmin && (
@@ -743,6 +777,16 @@ export default function Societies() {
           )
         })}
       </div>
+
+      {joinError && (
+        <div style={{
+          margin: '12px 0', padding: '10px 14px', borderRadius: 6,
+          background: `${O.error}14`, border: `1px solid ${O.error}33`,
+          color: O.error, fontSize: 12, fontFamily: theme.fonts.mono,
+        }}>
+          {joinError}
+        </div>
+      )}
 
       {/* ─── Discover Societies ─── */}
       {!isGlobalAdmin && (

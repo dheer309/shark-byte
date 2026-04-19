@@ -147,6 +147,9 @@ export const societies = {
 
   leaveSociety: (societyId: string) =>
     request(`/societies/${societyId}/leave`, { method: 'POST' }),
+
+  deleteSociety: (societyId: string) =>
+    request(`/societies/${societyId}`, { method: 'DELETE' }),
 }
 
 // ─── Gamification ───────────────────────────────────

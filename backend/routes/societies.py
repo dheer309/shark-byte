@@ -15,25 +15,36 @@ def get_db():
 def serialize_society(soc, db=None):
     admin_ids = soc.get('admins', [])
     admin_details = []
+    valid_admin_ids = []
+
     if db is not None and admin_ids:
         admin_users = {str(u['_id']): u for u in db.users.find(
             {'_id': {'$in': admin_ids}}, {'name': 1, 'email': 1}
         )}
         for a in admin_ids:
             u = admin_users.get(str(a))
-            admin_details.append({
-                '_id': str(a),
-                'name': u['name'] if u else 'Unknown',
-                'email': u['email'] if u else '',
-            })
+            if u:
+                valid_admin_ids.append(a)
+                admin_details.append({
+                    '_id': str(a),
+                    'name': u['name'],
+                    'email': u['email'],
+                })
+
+        if len(valid_admin_ids) != len(admin_ids):
+            db.societies.update_one(
+                {'_id': soc['_id']},
+                {'$set': {'admins': valid_admin_ids}}
+            )
     else:
+        valid_admin_ids = admin_ids
         admin_details = [{'_id': str(a), 'name': '', 'email': ''} for a in admin_ids]
 
     return {
         '_id': str(soc['_id']),
         'name': soc['name'],
         'lead_id': str(soc['lead_id']) if soc.get('lead_id') else None,
-        'admins': [str(a) for a in admin_ids],
+        'admins': [str(a) for a in valid_admin_ids],
         'admin_details': admin_details,
         'members': [str(m) for m in soc.get('members', [])],
         'description': soc.get('description', ''),
@@ -108,6 +119,24 @@ def create_society():
     society['_id'] = result.inserted_id
 
     return jsonify(serialize_society(society, db)), 201
+
+
+@societies_bp.route('/<society_id>', methods=['DELETE'])
+def delete_society(society_id):
+    payload = _get_auth_payload()
+    if not payload:
+        return jsonify({'message': 'Token required'}), 401
+
+    if payload.get('email') != SUPERUSER_EMAIL and payload.get('role') not in ('class_admin',):
+        return jsonify({'message': 'Only admins can delete societies'}), 403
+
+    db = get_db()
+    result = db.societies.delete_one({'_id': ObjectId(society_id)})
+    if result.deleted_count == 0:
+        return jsonify({'message': 'Society not found'}), 404
+
+    db.events.delete_many({'society_id': ObjectId(society_id)})
+    return jsonify({'message': 'Society deleted'}), 200
 
 
 # ─── Society Admin Management ────────────────────────
